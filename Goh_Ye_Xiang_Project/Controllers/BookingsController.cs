@@ -1,8 +1,6 @@
-﻿using CozyPlaceSG.Data;
-using CozyPlaceSG.Models;
+﻿using CozyPlaceSG.Models;
 using Goh_Ye_Xiang_Project.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CozyPlaceSG.Controllers
