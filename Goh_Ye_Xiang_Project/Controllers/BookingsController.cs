@@ -115,16 +115,21 @@ namespace CozyPlaceSG.Controllers
         [HttpPut]
         public async Task<IActionResult> Put()
         {
+            // Parse the incoming booking data from the request body
             var booking = await ParseRequestBody<Booking>();
             if (booking == null || booking.BookingId <= 0)
             {
                 return BadRequest("Invalid booking data.");
             }
 
+            // Find the existing booking by ID
             var entity = _context.Bookings.FirstOrDefault(e => e.BookingId == booking.BookingId);
             if (entity == null)
+            {
                 return Problem(detail: "Booking with id " + booking.BookingId + " is not found.", statusCode: 404);
+            }
 
+            // Update all columns based on the incoming data
             entity.FacilityName = booking.FacilityName;
             entity.FacilityDescription = booking.FacilityDescription;
             entity.BookingDateFrom = booking.BookingDateFrom;
@@ -132,12 +137,19 @@ namespace CozyPlaceSG.Controllers
             entity.BookingTimeFrom = booking.BookingTimeFrom;
             entity.BookingTimeTo = booking.BookingTimeTo;
             entity.BookedBy = booking.BookedBy;
-            entity.BookingStatus = Enum.TryParse(booking.BookingStatus.ToString(), true, out BookingStatus parsedStatus) ? parsedStatus : BookingStatus.Pending;
 
+            // Validate and update the booking status
+            entity.BookingStatus = Enum.TryParse(booking.BookingStatus.ToString(), true, out BookingStatus parsedStatus)
+                ? parsedStatus
+                : BookingStatus.Pending;
+
+            // Save the changes to the database
             _context.SaveChanges();
 
+            // Return the updated booking entity
             return Ok(entity);
         }
+
 
         [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         [HttpDelete]

@@ -3,30 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Bookings</title>
+    <title>Bookings Management</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>All Bookings</h1>
-    <button onclick="getBookings()">Load Bookings</button>
-    <div id="bookings-list"></div>
+    <header>
+        <h1>Manage Bookings</h1>
+        <nav>
+            <a href="create-booking.html">Create Booking</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>All Bookings</h2>
+        <table id="booking-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Facility Name</th>
+                    <th>Facility Description</th>
+                    <th>Booking Dates</th>
+                    <th>Booking Time</th>
+                    <th>Booked By</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Booking records will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <h3>Search Bookings</h3>
+        <div id="search-section">
+            <!-- Search by ID -->
+            <div>
+                <label for="search-id">Search by Booking ID:</label>
+                <input type="number" id="search-id" placeholder="Enter Booking ID">
+                <button onclick="fetchBookingById()">Search</button>
+            </div>
+
+            <!-- Search by Status -->
+            <div>
+                <label for="search-status">Search by Status:</label>
+                <select id="search-status">
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <button onclick="fetchBookingsByStatus()">Search</button>
+            </div>
+        </div>
+
+        <div id="search-results">
+            <!-- Search results will be displayed here -->
+            <h4>Search Results:</h4>
+            <table id="search-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Facility Name</th>
+                        <th>Facility Description</th>
+                        <th>Booking Dates</th>
+                        <th>Booking Time</th>
+                        <th>Booked By</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Search results will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 CozyPlaceSG</p>
+    </footer>
 
     <script>
-        async function getBookings() {
-            const response = await fetch('/api/bookings');
-            const bookings = await response.json();
-            const bookingsList = document.getElementById('bookings-list');
-            bookingsList.innerHTML = '<ul>' + bookings.map(booking => `
-                    <li>
-                        ${booking.facilityName} - ${booking.bookingStatus}
-                        <br>
-                        <button onclick="window.location.href='create-booking.html'">Create Booking</button>
-                        <button onclick="window.location.href='delete-booking.html'">Delete Booking</button>
-                        <button onclick="window.location.href='get-booking-by-id.html'">Get Booking by ID</button>
-                        <button onclick="window.location.href='get-booking-by-status.html'">Get Bookings by Status</button>
-                        <button onclick="window.location.href='update-booking.html'">Update Booking</button>
-                    </li>
-                `).join('') + '</ul>';
+        // Map BookingStatus enum values to their string representations
+        const BookingStatusEnum = {
+            0: "Confirmed",
+            1: "Pending",
+            2: "Cancelled"
+        };
+
+        // Function to fetch all bookings
+        async function fetchBookings() {
+            try {
+                const response = await fetch('/api/bookings');
+                if (response.ok) {
+                    const bookings = await response.json();
+                    displayBookings(bookings, '#booking-table tbody');
+                } else {
+                    alert('Failed to fetch bookings.');
+                }
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                alert('An error occurred while fetching booking records.');
+            }
         }
+
+        // Function to display bookings in a table
+        function displayBookings(bookings, tableSelector) {
+            const tableBody = document.querySelector(tableSelector);
+            tableBody.innerHTML = ''; // Clear any previous content
+
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${booking.bookingId}</td>
+                        <td>${booking.facilityName}</td>
+                        <td>${booking.facilityDescription}</td>
+                        <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
+                        <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
+                        <td>${booking.bookedBy}</td>
+                        <td>${BookingStatusEnum[booking.bookingStatus]}</td>
+                    `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to fetch a booking by ID
+        async function fetchBookingById() {
+            const bookingId = document.getElementById('search-id').value;
+            if (!bookingId) {
+                alert('Please enter a Booking ID.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}`);
+                if (response.ok) {
+                    const booking = await response.json();
+                    displayBookings([booking], '#search-table tbody');
+                } else {
+                    alert('No booking found with the given ID.');
+                }
+            } catch (error) {
+                console.error('Error fetching booking by ID:', error);
+                alert('An error occurred while fetching the booking.');
+            }
+        }
+
+        // Function to fetch bookings by status
+        async function fetchBookingsByStatus() {
+            const status = document.getElementById('search-status').value;
+            if (!status) {
+                alert('Please select a status.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bookings/status/${status}`);
+                if (response.ok) {
+                    const bookings = await response.json();
+                    displayBookings(bookings, '#search-table tbody');
+                } else {
+                    alert(`No bookings found with status '${status}'.`);
+                }
+            } catch (error) {
+                console.error('Error fetching bookings by status:', error);
+                alert('An error occurred while fetching the bookings.');
+            }
+        }
+
+        // Fetch all bookings when the page loads
+        window.onload = fetchBookings;
     </script>
 </body>
 </html>

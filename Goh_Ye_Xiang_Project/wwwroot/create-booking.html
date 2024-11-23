@@ -4,59 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Booking</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional external stylesheet for styling -->
 </head>
 <body>
-    <h1>Create Booking</h1>
-    <form id="createBookingForm">
-        <label for="facilityName">Facility Name:</label>
-        <input type="text" id="facilityName" name="facilityName" required><br><br>
+    <div class="container">
+        <h1>Create New Booking</h1>
+        <form id="createBookingForm">
+            <div class="form-group">
+                <label for="facilityName">Facility Name:</label>
+                <input type="text" id="facilityName" name="facilityName" required maxlength="100" placeholder="Enter facility name">
+            </div>
 
-        <label for="facilityDescription">Facility Description:</label>
-        <input type="text" id="facilityDescription" name="facilityDescription" required><br><br>
+            <div class="form-group">
+                <label for="facilityDescription">Facility Description:</label>
+                <textarea id="facilityDescription" name="facilityDescription" required maxlength="255" placeholder="Enter facility description"></textarea>
+            </div>
 
-        <label for="bookingDateFrom">Booking Date From:</label>
-        <input type="date" id="bookingDateFrom" name="bookingDateFrom" required><br><br>
+            <div class="form-group">
+                <label for="bookingDateFrom">Booking Date From:</label>
+                <input type="date" id="bookingDateFrom" name="bookingDateFrom" required>
+            </div>
 
-        <label for="bookingDateTo">Booking Date To:</label>
-        <input type="date" id="bookingDateTo" name="bookingDateTo" required><br><br>
+            <div class="form-group">
+                <label for="bookingDateTo">Booking Date To:</label>
+                <input type="date" id="bookingDateTo" name="bookingDateTo" required>
+            </div>
 
-        <label for="bookingTimeFrom">Booking Time From:</label>
-        <input type="time" id="bookingTimeFrom" name="bookingTimeFrom" required><br><br>
+            <div class="form-group">
+                <label for="bookingTimeFrom">Booking Time From:</label>
+                <input type="text" id="bookingTimeFrom" name="bookingTimeFrom" required placeholder="Enter booking time from">
+            </div>
 
-        <label for="bookingTimeTo">Booking Time To:</label>
-        <input type="time" id="bookingTimeTo" name="bookingTimeTo" required><br><br>
+            <div class="form-group">
+                <label for="bookingTimeTo">Booking Time To:</label>
+                <input type="text" id="bookingTimeTo" name="bookingTimeTo" required placeholder="Enter booking time to">
+            </div>
 
-        <label for="bookedBy">Booked By:</label>
-        <input type="text" id="bookedBy" name="bookedBy" required><br><br>
+            <div class="form-group">
+                <label for="bookedBy">Booked By:</label>
+                <input type="text" id="bookedBy" name="bookedBy" required maxlength="50" placeholder="Enter your name">
+            </div>
 
-        <label for="bookingStatus">Booking Status:</label>
-        <select id="bookingStatus" name="bookingStatus" required>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Pending">Pending</option>
-            <option value="Cancelled">Cancelled</option>
-        </select><br><br>
+            <div class="form-group">
+                <label for="bookingStatus">Booking Status:</label>
+                <select id="bookingStatus" name="bookingStatus" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
 
-        <button type="submit">Create Booking</button>
-    </form>
+            <div class="form-group">
+                <button type="submit">Create Booking</button>
+            </div>
+        </form>
+
+        <div id="responseMessage"></div>
+    </div>
 
     <script>
-        document.getElementById('createBookingForm').addEventListener('submit', async function(event) {
+        // Function to handle form submission
+        document.getElementById('createBookingForm').addEventListener('submit', async function (event) {
             event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData.entries());
 
-            const response = await fetch('/api/bookings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            // Capture form data as plain strings
+            const formData = new FormData(this);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value; // Keep values as strings
             });
 
-            if (response.ok) {
-                alert('Booking Created Successfully!');
-            } else {
-                alert('Error creating booking.');
+            try {
+                // Send data to the backend
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject) // Send as JSON
+                });
+
+                if (response.ok) {
+                    document.getElementById('responseMessage').textContent = 'Booking created successfully!';
+                    // Wait for a short time, then navigate to bookings.html
+                    setTimeout(() => {
+                        window.location.href = 'bookings.html';
+                    }, 1000);
+                } else {
+                    const error = await response.text();
+                    document.getElementById('responseMessage').textContent = 'Error: ' + error;
+                }
+            } catch (error) {
+                document.getElementById('responseMessage').textContent = 'An error occurred: ' + error.message;
             }
         });
     </script>
