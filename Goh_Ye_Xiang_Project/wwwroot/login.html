@@ -20,7 +20,13 @@
             });
 
             if (response.ok) {
-                // On successful login, navigate to bookings.html
+                const data = await response.json(); // Assuming the response contains a token
+                const token = data.token; // Replace with the actual token key from your API response
+
+                // Store the token securely in localStorage
+                localStorage.setItem("authToken", token);
+
+                // Navigate to bookings.html
                 window.location.href = "bookings.html";
             } else {
                 alert("Login failed: " + response.statusText);

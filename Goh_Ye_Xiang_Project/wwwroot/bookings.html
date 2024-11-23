@@ -89,10 +89,28 @@
             2: "Cancelled"
         };
 
+        // Function to get the authorization token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem("authToken");
+        }
+
         // Function to fetch all bookings
         async function fetchBookings() {
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to view bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
             try {
-                const response = await fetch('/api/bookings');
+                const response = await fetch('/api/bookings', {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
                 if (response.ok) {
                     const bookings = await response.json();
                     displayBookings(bookings, '#booking-table tbody');
@@ -113,14 +131,14 @@
             bookings.forEach(booking => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                        <td>${booking.bookingId}</td>
-                        <td>${booking.facilityName}</td>
-                        <td>${booking.facilityDescription}</td>
-                        <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
-                        <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
-                        <td>${booking.bookedBy}</td>
-                        <td>${BookingStatusEnum[booking.bookingStatus]}</td>
-                    `;
+                            <td>${booking.bookingId}</td>
+                            <td>${booking.facilityName}</td>
+                            <td>${booking.facilityDescription}</td>
+                            <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
+                            <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
+                            <td>${booking.bookedBy}</td>
+                            <td>${BookingStatusEnum[booking.bookingStatus]}</td>
+                        `;
                 tableBody.appendChild(row);
             });
         }
@@ -133,8 +151,21 @@
                 return;
             }
 
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to search for bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
             try {
-                const response = await fetch(`/api/bookings/${bookingId}`);
+                const response = await fetch(`/api/bookings/${bookingId}`, {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
                 if (response.ok) {
                     const booking = await response.json();
                     displayBookings([booking], '#search-table tbody');
@@ -155,8 +186,21 @@
                 return;
             }
 
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to search for bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
             try {
-                const response = await fetch(`/api/bookings/status/${status}`);
+                const response = await fetch(`/api/bookings/status/${status}`, {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
                 if (response.ok) {
                     const bookings = await response.json();
                     displayBookings(bookings, '#search-table tbody');

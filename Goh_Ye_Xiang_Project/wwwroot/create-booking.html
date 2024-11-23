@@ -74,12 +74,22 @@
                 formObject[key] = value; // Keep values as strings
             });
 
+            // Retrieve the JWT token from localStorage
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                document.getElementById('responseMessage').textContent = 'Error: No token found. Please log in again.';
+                return;
+            }
+
+
             try {
-                // Send data to the backend
+                // Send data to the backend with Authorization header
                 const response = await fetch('/api/bookings', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Include the token in the Authorization header
                     },
                     body: JSON.stringify(formObject) // Send as JSON
                 });
