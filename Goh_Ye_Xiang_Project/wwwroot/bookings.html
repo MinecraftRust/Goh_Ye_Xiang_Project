@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Manage Bookings</h1>
+        <nav>
+            <a href="create-booking.html">Create Booking</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>All Bookings</h2>
+        <table id="booking-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Facility Name</th>
+                    <th>Facility Description</th>
+                    <th>Booking Dates</th>
+                    <th>Booking Time</th>
+                    <th>Booked By</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Booking records will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <h3>Search Bookings</h3>
+        <div id="search-section">
+            <!-- Search by ID -->
+            <div>
+                <label for="search-id">Search by Booking ID:</label>
+                <input type="number" id="search-id" placeholder="Enter Booking ID">
+                <button onclick="fetchBookingById()">Search</button>
+            </div>
+
+            <!-- Search by Status -->
+            <div>
+                <label for="search-status">Search by Status:</label>
+                <select id="search-status">
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <button onclick="fetchBookingsByStatus()">Search</button>
+            </div>
+        </div>
+
+        <div id="search-results">
+            <!-- Search results will be displayed here -->
+            <h4>Search Results:</h4>
+            <table id="search-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Facility Name</th>
+                        <th>Facility Description</th>
+                        <th>Booking Dates</th>
+                        <th>Booking Time</th>
+                        <th>Booked By</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Search results will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 CozyPlaceSG</p>
+    </footer>
+
+    <script>
+        // Map BookingStatus enum values to their string representations
+        const BookingStatusEnum = {
+            0: "Confirmed",
+            1: "Pending",
+            2: "Cancelled"
+        };
+
+        // Function to get the authorization token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem("authToken");
+        }
+
+        // Function to fetch all bookings
+        async function fetchBookings() {
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to view bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/bookings', {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const bookings = await response.json();
+                    displayBookings(bookings, '#booking-table tbody');
+                } else {
+                    alert('Failed to fetch bookings.');
+                }
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                alert('An error occurred while fetching booking records.');
+            }
+        }
+
+        // Function to display bookings in a table
+        function displayBookings(bookings, tableSelector) {
+            const tableBody = document.querySelector(tableSelector);
+            tableBody.innerHTML = ''; // Clear any previous content
+
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                                <td>${booking.bookingId}</td>
+                                <td>${booking.facilityName}</td>
+                                <td>${booking.facilityDescription}</td>
+                                <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
+                                <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
+                                <td>${booking.bookedBy}</td>
+                                <td>${BookingStatusEnum[booking.bookingStatus]}</td>
+                                <td>
+                                    <button onclick="window.location.href = 'edit-booking.html?bookingId=${booking.bookingId}'">Edit</button>
+                                    <button onclick="deleteBooking(${booking.bookingId})">Delete</button>
+                                </td>
+                            `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to fetch a booking by ID
+        async function fetchBookingById() {
+            const bookingId = document.getElementById('search-id').value;
+            if (!bookingId) {
+                alert('Please enter a Booking ID.');
+                return;
+            }
+
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to search for bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}`, {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const booking = await response.json();
+                    displayBookings([booking], '#search-table tbody');
+                } else {
+                    alert('No booking found with the given ID.');
+                }
+            } catch (error) {
+                console.error('Error fetching booking by ID:', error);
+                alert('An error occurred while fetching the booking.');
+            }
+        }
+
+        // Function to fetch bookings by status
+        async function fetchBookingsByStatus() {
+            const status = document.getElementById('search-status').value;
+            if (!status) {
+                alert('Please select a status.');
+                return;
+            }
+
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to search for bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bookings/status/${status}`, {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const bookings = await response.json();
+                    displayBookings(bookings, '#search-table tbody');
+                } else {
+                    alert(`No bookings found with status '${status}'.`);
+                }
+            } catch (error) {
+                console.error('Error fetching bookings by status:', error);
+                alert('An error occurred while fetching the bookings.');
+            }
+        }
+
+        
+
+        // Function to handle booking delete (DELETE)
+        async function deleteBooking(bookingId) {
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to delete bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            if (confirm("Are you sure you want to delete this booking?")) {
+                try {
+                    const response = await fetch(`/api/bookings`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ bookingId })
+                    });
+
+                    if (response.ok) {
+                        alert('Booking deleted successfully.');
+                        fetchBookings(); // Reload the bookings
+                    } else {
+                        alert('Failed to delete booking.');
+                    }
+                } catch (error) {
+                    console.error('Error deleting booking:', error);
+                    alert('An error occurred while deleting the booking.');
+                }
+            }
+        }
+
+        // Fetch all bookings when the page loads
+        window.onload = fetchBookings;
+    </script>
+</body>
+</html>

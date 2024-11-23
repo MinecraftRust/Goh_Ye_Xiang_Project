@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Booking</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Edit Booking</h1>
+        <form id="editBookingForm">
+            <input type="hidden" id="bookingId">
+
+            <label for="facilityName">Facility Name:</label>
+            <input type="text" id="facilityName" required>
+
+            <label for="facilityDescription">Facility Description:</label>
+            <input type="text" id="facilityDescription" required>
+
+            <label for="bookingDateFrom">Booking Date From:</label>
+            <input type="date" id="bookingDateFrom" required>
+
+            <label for="bookingDateTo">Booking Date To:</label>
+            <input type="date" id="bookingDateTo" required>
+
+            <label for="bookingTimeFrom">Booking Time From:</label>
+            <input type="time" id="bookingTimeFrom" required>
+
+            <label for="bookingTimeTo">Booking Time To:</label>
+            <input type="time" id="bookingTimeTo" required>
+
+            <label for="bookedBy">Booked By:</label>
+            <input type="text" id="bookedBy" required>
+
+            <label for="bookingStatus">Booking Status:</label>
+            <select id="bookingStatus" required>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Pending">Pending</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+
+            <button type="submit">Update Booking</button>
+        </form>
+    </div>
+    <script>
+        // Map BookingStatus enum values to their string representations
+        const BookingStatusEnum = {
+            0: "Confirmed",
+            1: "Pending",
+            2: "Cancelled"
+        };
+
+        // Function to get the authorization token from localStorage
+        function getAuthToken() {
+            return localStorage.getItem("authToken");
+        }
+
+        // Function to fetch booking details and populate the form
+        async function fetchBookingDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookingId = urlParams.get('bookingId');
+
+            if (!bookingId) {
+                alert('Booking ID is missing.');
+                return;
+            }
+
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to edit bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/bookings/${bookingId}`, {
+                    method: 'GET',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const booking = await response.json();
+                    populateBookingForm(booking);
+                } else {
+                    alert('Failed to fetch booking details.');
+                }
+            } catch (error) {
+                console.error('Error fetching booking details:', error);
+                alert('An error occurred while fetching booking details.');
+            }
+        }
+
+        // Function to populate the booking form with data
+        function populateBookingForm(booking) {
+            document.getElementById('bookingId').value = booking.bookingId;
+            document.getElementById('facilityName').value = booking.facilityName;
+            document.getElementById('facilityDescription').value = booking.facilityDescription;
+            document.getElementById('bookingDateFrom').value = booking.bookingDateFrom.split('T')[0]; // Format as YYYY-MM-DD
+            document.getElementById('bookingDateTo').value = booking.bookingDateTo.split('T')[0]; // Format as YYYY-MM-DD
+            document.getElementById('bookingTimeFrom').value = booking.bookingTimeFrom;
+            document.getElementById('bookingTimeTo').value = booking.bookingTimeTo;
+            document.getElementById('bookedBy').value = booking.bookedBy;
+            document.getElementById('bookingStatus').value = booking.bookingStatus;
+        }
+
+        // Function to handle booking update (PUT)
+        async function updateBooking(event) {
+            event.preventDefault();
+
+            const bookingId = document.getElementById('bookingId').value;
+            const facilityName = document.getElementById('facilityName').value;
+            const facilityDescription = document.getElementById('facilityDescription').value;
+            const bookingDateFrom = document.getElementById('bookingDateFrom').value;
+            const bookingDateTo = document.getElementById('bookingDateTo').value;
+            const bookingTimeFrom = document.getElementById('bookingTimeFrom').value;
+            const bookingTimeTo = document.getElementById('bookingTimeTo').value;
+            const bookedBy = document.getElementById('bookedBy').value;
+            const bookingStatus = document.getElementById('bookingStatus').value;
+
+            const token = getAuthToken();
+            if (!token) {
+                alert("You must be logged in to update bookings.");
+                window.location.href = "login.html"; // Redirect to login page
+                return;
+            }
+
+            const updatedBooking = {
+                bookingId,
+                facilityName,
+                facilityDescription,
+                bookingDateFrom,
+                bookingDateTo,
+                bookingTimeFrom,
+                bookingTimeTo,
+                bookedBy,
+                bookingStatus
+            };
+
+            try {
+                const response = await fetch(`/api/bookings`, {
+                    method: 'PUT',
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedBooking)
+                });
+
+                if (response.ok) {
+                    alert('Booking updated successfully.');
+                    window.location.href = 'bookings.html'; // Redirect back to the bookings page
+                } else {
+                    alert('Failed to update booking.');
+                }
+            } catch (error) {
+                console.error('Error updating booking:', error);
+                alert('An error occurred while updating the booking.');
+            }
+        }
+
+        // Fetch the booking details when the page loads
+        window.onload = fetchBookingDetails;
+
+        // Attach the form submission handler to update booking
+        document.getElementById('editBookingForm').addEventListener('submit', updateBooking);
+    </script>
+</body>
+</html>
