@@ -110,7 +110,17 @@
 
     <!-- Footer -->
     <div class="footer">
-        © 2024 CozyPlaceSG. All Rights Reserved.
+        2024 CozyPlaceSG. All Rights Reserved.
     </div>
+
+    <script>
+        window.onload = function() {
+            const message = localStorage.getItem("registrationMessage");
+            if (message) {
+                alert(message);  // Display the success message
+                localStorage.removeItem("registrationMessage"); // Clear the message after displaying
+            }
+        }
+    </script>
 </body>
 </html>

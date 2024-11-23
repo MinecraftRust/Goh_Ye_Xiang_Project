@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace CozyPlaceSG.Controllers
@@ -38,17 +38,46 @@ namespace CozyPlaceSG.Controllers
                 expires: DateTime.Now.AddHours(3),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+            );
 
             return token;
         }
 
+        // Helper method to parse input data based on content type
+        private async Task<T?> ParseInputDataAsync<T>()
+        {
+            if (Request.ContentType == "application/json")
+            {
+                var requestBody = string.Empty;
+                using (var reader = new StreamReader(Request.Body))
+                {
+                    requestBody = await reader.ReadToEndAsync();
+                }
+                return JsonConvert.DeserializeObject<T>(requestBody);
+            }
+            else if (Request.ContentType == "application/x-www-form-urlencoded")
+            {
+                var formData = await Request.ReadFormAsync();
+                var json = JsonConvert.SerializeObject(formData.ToDictionary(x => x.Key, x => x.Value.ToString()));
+                return JsonConvert.DeserializeObject<T>(json);
+            }
+
+            return default;
+        }
+
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login()
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var inputData = await ParseInputDataAsync<LoginModel>();
+
+            if (inputData == null || string.IsNullOrEmpty(inputData.Username) || string.IsNullOrEmpty(inputData.Password))
+            {
+                return BadRequest(new Response { Status = "Error", Message = "Invalid input data." });
+            }
+
+            var user = await _userManager.FindByNameAsync(inputData.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, inputData.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -71,67 +100,93 @@ namespace CozyPlaceSG.Controllers
                     expiration = token.ValidTo
                 });
             }
+
             return Unauthorized();
         }
 
         [HttpPost]
         [Route("register-member")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register()
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var inputData = await ParseInputDataAsync<RegisterModel>();
+
+            if (inputData == null || string.IsNullOrEmpty(inputData.Username) || string.IsNullOrEmpty(inputData.Email) || string.IsNullOrEmpty(inputData.Password))
+            {
+                return BadRequest(new Response { Status = "Error", Message = "Invalid input data." });
+            }
+
+            var userExists = await _userManager.FindByNameAsync(inputData.Username);
             if (userExists != null)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Error", Message = "User already exists!" });
+            }
 
             IdentityUser user = new()
             {
-                Email = model.Email,
+                Email = inputData.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = inputData.Username
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+
+            var result = await _userManager.CreateAsync(user, inputData.Password);
             if (!result.Succeeded)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            }
 
             if (!await _roleManager.RoleExistsAsync(UserRoles.member))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.member));
+
             if (await _roleManager.RoleExistsAsync(UserRoles.member))
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.member);
             }
+
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
         }
 
-
-        [HttpPost]
-        [Route("register-administrator")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
+        [HttpPost("register-administrator")]
+        public async Task<IActionResult> RegisterAdmin()
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var inputData = await ParseInputDataAsync<RegisterModel>();
+
+            if (inputData == null || string.IsNullOrEmpty(inputData.Username) || string.IsNullOrEmpty(inputData.Email) || string.IsNullOrEmpty(inputData.Password))
+            {
+                return BadRequest(new Response { Status = "Error", Message = "Invalid input data." });
+            }
+
+            var userExists = await _userManager.FindByNameAsync(inputData.Username);
             if (userExists != null)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Error", Message = "User already exists!" });
+            }
 
             IdentityUser user = new()
             {
-                Email = model.Email,
+                Email = inputData.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = inputData.Username
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+
+            var result = await _userManager.CreateAsync(user, inputData.Password);
             if (!result.Succeeded)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            }
 
             if (!await _roleManager.RoleExistsAsync(UserRoles.Administrator))
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Administrator));
+
             if (await _roleManager.RoleExistsAsync(UserRoles.Administrator))
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.Administrator);
             }
 
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            return Ok(new Response { Status = "Success", Message = "Administrator created successfully!" });
         }
-    } // End of class here!
+    }
 }

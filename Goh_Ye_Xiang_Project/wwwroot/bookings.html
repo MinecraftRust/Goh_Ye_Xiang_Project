@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Bookings</title>
+</head>
+<body>
+    <h1>All Bookings</h1>
+    <button onclick="getBookings()">Load Bookings</button>
+    <div id="bookings-list"></div>
+
+    <script>
+        async function getBookings() {
+            const response = await fetch('/api/bookings');
+            const bookings = await response.json();
+            const bookingsList = document.getElementById('bookings-list');
+            bookingsList.innerHTML = '<ul>' + bookings.map(booking => `
+                    <li>
+                        ${booking.facilityName} - ${booking.bookingStatus}
+                        <br>
+                        <button onclick="window.location.href='create-booking.html'">Create Booking</button>
+                        <button onclick="window.location.href='delete-booking.html'">Delete Booking</button>
+                        <button onclick="window.location.href='get-booking-by-id.html'">Get Booking by ID</button>
+                        <button onclick="window.location.href='get-booking-by-status.html'">Get Bookings by Status</button>
+                        <button onclick="window.location.href='update-booking.html'">Update Booking</button>
+                    </li>
+                `).join('') + '</ul>';
+        }
+    </script>
+</body>
+</html>
