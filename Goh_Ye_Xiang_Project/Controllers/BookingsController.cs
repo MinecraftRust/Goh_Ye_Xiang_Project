@@ -20,7 +20,7 @@ namespace CozyPlaceSG.Controllers
 
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         // GET: api/Bookings
         [HttpGet]
         public IActionResult GetAll()
@@ -29,7 +29,7 @@ namespace CozyPlaceSG.Controllers
         }
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         // GET: api/Bookings/{id}
         [HttpGet("{id}")]
         public IActionResult GetById(int? id)
@@ -50,7 +50,7 @@ namespace CozyPlaceSG.Controllers
 
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         // GET: api/Bookings/status/{status}
         [HttpGet("status/{status}")]
         public IActionResult GetByStatus(string status)
@@ -73,7 +73,7 @@ namespace CozyPlaceSG.Controllers
 
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         [HttpPost]
         public IActionResult Post(Booking booking)
         {
@@ -87,7 +87,7 @@ namespace CozyPlaceSG.Controllers
 
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         [HttpPut]
         public IActionResult Put(int? BookingId, Booking booking)
         {
@@ -111,7 +111,7 @@ namespace CozyPlaceSG.Controllers
 
 
 
-        // [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
+        [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         [HttpDelete]
         public IActionResult Delete(int? BookingId)
         {
