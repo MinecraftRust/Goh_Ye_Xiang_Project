@@ -18,7 +18,7 @@ namespace CozyPlaceSG.Controllers
             _context = context;
         }
 
-
+        // [AllowAnonymous] (DO NOT USE BUT IN CASE NEED)
 
         [Authorize(Roles = UserRoles.Administrator + "," + UserRoles.member)]
         // GET: api/Bookings
