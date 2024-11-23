@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Booking</title>
+</head>
+<body>
+    <h1>Create Booking</h1>
+    <form id="createBookingForm">
+        <label for="facilityName">Facility Name:</label>
+        <input type="text" id="facilityName" name="facilityName" required><br><br>
+
+        <label for="facilityDescription">Facility Description:</label>
+        <input type="text" id="facilityDescription" name="facilityDescription" required><br><br>
+
+        <label for="bookingDateFrom">Booking Date From:</label>
+        <input type="date" id="bookingDateFrom" name="bookingDateFrom" required><br><br>
+
+        <label for="bookingDateTo">Booking Date To:</label>
+        <input type="date" id="bookingDateTo" name="bookingDateTo" required><br><br>
+
+        <label for="bookingTimeFrom">Booking Time From:</label>
+        <input type="time" id="bookingTimeFrom" name="bookingTimeFrom" required><br><br>
+
+        <label for="bookingTimeTo">Booking Time To:</label>
+        <input type="time" id="bookingTimeTo" name="bookingTimeTo" required><br><br>
+
+        <label for="bookedBy">Booked By:</label>
+        <input type="text" id="bookedBy" name="bookedBy" required><br><br>
+
+        <label for="bookingStatus">Booking Status:</label>
+        <select id="bookingStatus" name="bookingStatus" required>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Pending">Pending</option>
+            <option value="Cancelled">Cancelled</option>
+        </select><br><br>
+
+        <button type="submit">Create Booking</button>
+    </form>
+
+    <script>
+        document.getElementById('createBookingForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch('/api/bookings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('Booking Created Successfully!');
+            } else {
+                alert('Error creating booking.');
+            }
+        });
+    </script>
+</body>
+</html>

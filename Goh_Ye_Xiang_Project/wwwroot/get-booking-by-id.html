@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Booking by ID</title>
+</head>
+<body>
+    <h1>Get Booking by ID</h1>
+    <form id="getBookingByIdForm">
+        <label for="bookingId">Booking ID:</label>
+        <input type="number" id="bookingId" name="bookingId" required><br><br>
+        <button type="submit">Get Booking</button>
+    </form>
+
+    <div id="booking-details"></div>
+
+    <script>
+        document.getElementById('getBookingByIdForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const bookingId = document.getElementById('bookingId').value;
+            const response = await fetch(`/api/bookings/${bookingId}`);
+            const booking = await response.json();
+            const bookingDetails = document.getElementById('booking-details');
+            if (booking.bookingId) {
+                bookingDetails.innerHTML = `<p>Facility: ${booking.facilityName}</p><p>Status: ${booking.bookingStatus}</p>`;
+            } else {
+                bookingDetails.innerHTML = '<p>No booking found with that ID.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

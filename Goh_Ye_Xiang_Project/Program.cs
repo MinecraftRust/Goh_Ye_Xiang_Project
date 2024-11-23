@@ -81,6 +81,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Serve static files from wwwroot
+app.UseDefaultFiles(); // Enables serving default files like index.html
+app.UseStaticFiles();  // Enables serving static files
+
 app.UseHttpsRedirection();
 
 // Authentication

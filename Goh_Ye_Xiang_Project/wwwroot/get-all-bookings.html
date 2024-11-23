@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Bookings</title>
+</head>
+<body>
+    <h1>All Bookings</h1>
+    <button onclick="getBookings()">Load Bookings</button>
+    <div id="bookings-list"></div>
+
+    <script>
+        async function getBookings() {
+            const response = await fetch('/api/bookings');
+            const bookings = await response.json();
+            const bookingsList = document.getElementById('bookings-list');
+            bookingsList.innerHTML = '<ul>' + bookings.map(booking => `<li>${booking.facilityName} - ${booking.bookingStatus}</li>`).join('') + '</ul>';
+        }
+    </script>
+</body>
+</html>

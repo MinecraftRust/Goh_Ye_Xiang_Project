@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CozyPlaceSG - Home</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0078d7;
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+            .navbar a {
+                color: white;
+                text-decoration: none;
+                margin: 0 10px;
+                font-weight: bold;
+            }
+
+                .navbar a:hover {
+                    color: #ffcc00;
+                }
+
+            .navbar .logo {
+                font-size: 1.5rem;
+            }
+
+            .navbar .nav-links {
+                display: flex;
+                gap: 15px;
+            }
+
+        /* Main Section Styles */
+        .hero {
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(to bottom, #0078d7, #005a9e);
+            color: white;
+        }
+
+            .hero h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
+            }
+
+            .hero a {
+                background-color: #ffcc00;
+                color: #005a9e;
+                padding: 10px 20px;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+
+                .hero a:hover {
+                    background-color: #ffd633;
+                }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            background-color: #005a9e;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            CozyPlaceSG
+        </div>
+        <div class="nav-links">
+            <a href="login.html">Login</a>
+            <a href="register-member.html">Register as Member</a>
+            <a href="register-administrator.html">Register as Admin</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Welcome to CozyPlaceSG</h1>
+        <p>Your one-stop platform for managing bookings efficiently!</p>
+        <a href="login.html">Get Started</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2024 CozyPlaceSG. All Rights Reserved.
+    </div>
+</body>
+</html>
