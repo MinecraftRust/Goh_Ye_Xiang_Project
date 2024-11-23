@@ -1,5 +1,5 @@
-﻿using CozyPlaceSG.Models;
-using Goh_Ye_Xiang_Project.Data;
+﻿using CozyPlaceSG.Data;
+using CozyPlaceSG.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
