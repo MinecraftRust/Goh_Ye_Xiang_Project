@@ -4,58 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CozyPlaceSG - Home</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         /* General Styles */
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f9f9f9;
         }
 
         /* Navbar Styles */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             background-color: #0078d7;
-            color: white;
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 10px 15px;
         }
 
-            .navbar a {
-                color: white;
-                text-decoration: none;
-                margin: 0 10px;
-                font-weight: bold;
-            }
-
-                .navbar a:hover {
-                    color: #ffcc00;
-                }
-
-            .navbar .logo {
-                font-size: 1.5rem;
-            }
-
-            .navbar .nav-links {
-                display: flex;
-                gap: 15px;
-            }
-
-        /* Main Section Styles */
-        .hero {
-            text-align: center;
-            padding: 50px;
-            background: linear-gradient(to bottom, #0078d7, #005a9e);
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
             color: white;
+        }
+
+            .navbar-brand img {
+                height: 50px;
+                margin-right: 10px;
+            }
+
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+            .navbar-nav .nav-link:hover {
+                color: #ffcc00;
+            }
+
+        /* Hero Section Styles */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 100px 20px;
+            color: white;
+            background: linear-gradient(to bottom, rgba(0, 120, 215, 0.9), rgba(0, 90, 158, 0.9)), url('images/hero-background.jpg') no-repeat center center/cover;
         }
 
             .hero h1 {
-                font-size: 2.5rem;
-                margin-bottom: 10px;
+                font-size: 3rem;
+                font-weight: bold;
+                margin-bottom: 20px;
             }
 
             .hero p {
@@ -66,61 +72,213 @@
             .hero a {
                 background-color: #ffcc00;
                 color: #005a9e;
-                padding: 10px 20px;
+                padding: 12px 25px;
                 text-decoration: none;
                 border-radius: 5px;
                 font-weight: bold;
+                transition: background-color 0.3s ease;
             }
 
                 .hero a:hover {
                     background-color: #ffd633;
                 }
 
-        /* Footer Styles */
-        .footer {
+        /* About Section */
+        .about {
+            padding: 50px 20px;
             text-align: center;
+        }
+
+            .about h2 {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
+            .about p {
+                font-size: 1.1rem;
+                color: #555;
+                margin-bottom: 20px;
+            }
+
+        /* Features Section */
+        .features {
+            background-color: #eef4fc;
+            padding: 50px 20px;
+        }
+
+            .features .feature {
+                text-align: center;
+                padding: 20px;
+                transition: transform 0.3s ease;
+            }
+
+                .features .feature:hover {
+                    transform: scale(1.05);
+                }
+
+            .features i {
+                font-size: 3rem;
+                color: #0078d7;
+                margin-bottom: 15px;
+            }
+
+            .features h3 {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .features p {
+                font-size: 1rem;
+                color: #555;
+            }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+            .testimonials h2 {
+                font-size: 2.5rem;
+                margin-bottom: 30px;
+            }
+
+            .testimonials .card {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                margin: 20px;
+                border: none;
+            }
+
+        /* Footer */
+        .footer {
             background-color: #005a9e;
             color: white;
-            padding: 20px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9rem;
+            position: relative;
         }
+
+            .footer a {
+                color: white;
+                margin: 0 10px;
+                font-size: 1.2rem;
+                transition: color 0.3s ease;
+            }
+
+                .footer a:hover {
+                    color: #ffcc00;
+                }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            CozyPlaceSG
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="images/logo_transparent_background.png" alt="CozyPlaceSG Logo" style="width: 150px; height: 90px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register-member.html">Register as Member</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register-administrator.html">Register as Admin</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="nav-links">
-            <a href="login.html">Login</a>
-            <a href="register-member.html">Register as Member</a>
-            <a href="register-administrator.html">Register as Admin</a>
-        </div>
-    </div>
+    </nav>
 
     <!-- Hero Section -->
     <div class="hero">
         <h1>Welcome to CozyPlaceSG</h1>
-        <p>Your one-stop platform for managing bookings efficiently!</p>
+        <p>Your Private Movie Room Experience<br/>(NO CCTV, NO Disturbance)</p>
         <a href="login.html">Get Started</a>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        2024 CozyPlaceSG. All Rights Reserved.
-    </div>
+    <!-- About Section -->
+    <section class="about">
+        <h2>About Us</h2>
+        <p>At CozyPlaceSG, we simplify your booking experience with innovative tools and user-friendly designs. Book now today to enjoy your own private room!</p>
+    </section>
 
-    <script>
-        window.onload = function() {
-            const message = localStorage.getItem("registrationMessage");
-            if (message) {
-                alert(message);  // Display the success message
-                localStorage.removeItem("registrationMessage"); // Clear the message after displaying
-            }
-        }
-    </script>
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 feature">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Easy Bookings</h3>
+                    <p>Book your events with just a few clicks.</p>
+                </div>
+                <div class="col-md-4 feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Payments</h3>
+                    <p>Experience safe and reliable transactions.</p>
+                </div>
+                <div class="col-md-4 feature">
+                    <i class="fas fa-users"></i>
+                    <h3>User Support</h3>
+                    <p>24/7 support for all your booking needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <h2>What Our Users Say</h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>"CozyPlaceSG is such an amazing concept! Now, I can enjoy some quality alone time with my girlfriend in a private and intimate movie room experience."</p>
+                            <p class="text-muted">- Sarah Lee</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>"My friends and I always book a private movie room at CozyPlaceSG because it's simply the best place to watch a movie!"</p>
+                            <p class="text-muted">- James Tan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>"Their movie room is absolutely perfect—10/10! It might even be better than my own room!"</p>
+                            <p class="text-muted">- Aisha Ahmed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 CozyPlaceSG. All rights reserved.</p>
+        <p>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

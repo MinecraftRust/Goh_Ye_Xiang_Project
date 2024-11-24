@@ -4,6 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Member</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f0f4f8;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .register-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-control:focus {
+            border-color: #0078d7;
+            box-shadow: 0 0 0 0.2rem rgba(0, 120, 215, 0.25);
+        }
+
+        .register-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background-color: #0078d7;
+            border-color: #0078d7;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+            .btn-primary:hover {
+                background-color: #005a9e;
+                border-color: #005a9e;
+            }
+
+        .btn-secondary {
+            width: 100%;
+            font-weight: 500;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .text-muted {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+            .text-muted a {
+                color: #0078d7;
+                text-decoration: none;
+            }
+
+                .text-muted a:hover {
+                    text-decoration: underline;
+                }
+    </style>
     <script>
         async function handleRegister(event) {
             event.preventDefault();
@@ -28,21 +96,36 @@
                 alert("Registration failed: " + response.statusText);
             }
         }
+
+        function handleCancel() {
+            window.location.href = "index.html";
+        }
     </script>
 </head>
 <body>
-    <h1>Register as Member</h1>
-    <form onsubmit="handleRegister(event)">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+    <div class="container">
+        <div class="register-container">
+            <h1 class="register-title"><i class="fas fa-user"></i> Register as Member</h1>
+            <form onsubmit="handleRegister(event)">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <button type="button" class="btn btn-secondary" onclick="handleCancel()">Cancel</button>
+            </form>
+        </div>
+    </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <button type="submit">Register</button>
-    </form>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
