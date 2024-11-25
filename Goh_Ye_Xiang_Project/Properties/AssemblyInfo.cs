@@ -12,9 +12,13 @@ using System;
 using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Goh_Ye_Xiang_Project")]
-[assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dda92c226b18d182175fa582202d1a963662424b")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6433c90e0784555bb42925af4ec40c85ad66c08")]
+>>>>>>> development
 [assembly: System.Reflection.AssemblyProductAttribute("Goh_Ye_Xiang_Project")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Goh_Ye_Xiang_Project")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
