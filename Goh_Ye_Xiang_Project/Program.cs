@@ -85,6 +85,7 @@ if (app.Environment.IsDevelopment())
 // Serve static files from wwwroot
 app.UseDefaultFiles(); // Enables serving default files like index.html
 app.UseStaticFiles();  // Enables serving static files
+app.MapGet("/", () => Results.Redirect("/index.html"));
 
 app.UseHttpsRedirection();
 

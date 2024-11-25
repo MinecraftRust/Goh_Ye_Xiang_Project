@@ -124,7 +124,7 @@
                 </div>
             </div>
         </nav>
-        <br/>
+        <br />
         <h1>Manage Bookings</h1>
         <br />
         <nav>
@@ -191,7 +191,7 @@
                     <!-- Search results will be dynamically inserted here -->
                 </tbody>
             </table>
-            <br/><br/><br/><br/><br/>
+            <br /><br /><br /><br /><br />
         </div>
     </main>
 
@@ -251,19 +251,19 @@
             bookings.forEach(booking => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                                        <td>${booking.bookingId}</td>
-                                        <td>${booking.facilityName}</td>
-                                        <td>${booking.facilityDescription}</td>
-                                        <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
-                                        <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
-                                        <td>${booking.bookedBy}</td>
-                                        <td>${BookingStatusEnum[booking.bookingStatus]}</td>
-                                        <td>
-                                            <button onclick="window.location.href = 'edit-booking.html?bookingId=${booking.bookingId}'">Edit</button>
-                                            <br><br>
-                                            <button onclick="deleteBooking(${booking.bookingId})">Delete</button>
-                                        </td>
-                                    `;
+                                            <td>${booking.bookingId}</td>
+                                            <td>${booking.facilityName}</td>
+                                            <td>${booking.facilityDescription}</td>
+                                            <td>${new Date(booking.bookingDateFrom).toLocaleDateString()} to ${new Date(booking.bookingDateTo).toLocaleDateString()}</td>
+                                            <td>${booking.bookingTimeFrom} to ${booking.bookingTimeTo}</td>
+                                            <td>${booking.bookedBy}</td>
+                                            <td>${BookingStatusEnum[booking.bookingStatus]}</td>
+                                            <td>
+                                                <button onclick="window.location.href = 'edit-booking.html?bookingId=${booking.bookingId}'">Edit</button>
+                                                <br><br>
+                                                <button onclick="deleteBooking(${booking.bookingId})">Delete</button>
+                                            </td>
+                                        `;
                 tableBody.appendChild(row);
             });
         }

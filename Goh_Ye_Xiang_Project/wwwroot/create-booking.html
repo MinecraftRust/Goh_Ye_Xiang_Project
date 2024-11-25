@@ -196,11 +196,9 @@
         <div id="responseMessage"></div>
     </div>
     <script>
-        // Function to handle form submission
         document.getElementById('createBookingForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            // Capture form data as plain strings
             const formData = new FormData(this);
             const formObject = {};
             formData.forEach((value, key) => {
@@ -215,20 +213,27 @@
                 return;
             }
 
+            // Decode the JWT to check the user's role
+            const tokenPayload = JSON.parse(atob(token.split('.')[1])); // Decode base64 payload
+            const userRole = tokenPayload.role; // Assuming the role is stored in `role`
+
+            // Restrict booking status for members
+            if (userRole === "member") {
+                formObject.BookingStatus = "Pending"; // Force BookingStatus to Pending for members
+            }
+
             try {
-                // Send data to the backend with Authorization header
                 const response = await fetch('/api/bookings', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(formObject) // Send as JSON
+                    body: JSON.stringify(formObject)
                 });
 
                 if (response.ok) {
                     document.getElementById('responseMessage').textContent = 'Booking created successfully!';
-                    // Wait for a short time, then navigate to bookings.html
                     setTimeout(() => {
                         window.location.href = 'bookings.html';
                     }, 1000);
